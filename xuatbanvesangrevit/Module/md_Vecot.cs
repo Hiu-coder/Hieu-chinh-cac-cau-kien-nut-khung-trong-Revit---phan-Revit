@@ -52,6 +52,7 @@ public static class md_Vecot
                 Parameter baseOffset = columnInstance.get_Parameter(BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM);
                 if (baseOffset != null)
                     baseOffset.Set(0);
+                ElementTransformUtils.RotateElement(doc, columnInstance.Id, Line.CreateBound(point, point + XYZ.BasisZ), cot.Goc);
             }
 
 

@@ -14,6 +14,8 @@ public class cls_Cot
 
     [XmlElement("Lechgiaotruc")]
     public cls_Lech Lechgiaotruc { get; set; }
+    [XmlElement("Goc")]
+    public double Goc { get; set; }
 }
 
 [Serializable]
