@@ -15,7 +15,7 @@ public static class md_Vedam
         using (Transaction trans = new Transaction(doc, "Create Beam"))
         {
             trans.Start();
-            Level Levelmb = Level.Create(doc, cls_.CaoDo / 304.8);
+            Level Levelmb = Level.Create(doc, cls_.CaoDo);
 
             double levelElevation = Levelmb.Elevation;
 

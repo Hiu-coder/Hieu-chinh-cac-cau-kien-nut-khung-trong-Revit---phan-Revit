@@ -30,8 +30,8 @@ public static class md_Veluoi
     }
     private static void CreateGrid(Document doc, string name, cls_Diem start, cls_Diem end)
     {
-        XYZ pt1 = new XYZ(start.X/304.8, start.Y/304.8, start.Z / 304.8);
-        XYZ pt2 = new XYZ(end.X/304.8, end.Y / 304.8, end.Z / 304.8);
+        XYZ pt1 = new XYZ(start.X, start.Y, start.Z);
+        XYZ pt2 = new XYZ(end.X, end.Y, end.Z);
         Line gridLine = Line.CreateBound(pt1, pt2);
         Grid grid = Grid.Create(doc, gridLine);
         grid.Name = name;

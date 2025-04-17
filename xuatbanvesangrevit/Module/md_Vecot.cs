@@ -17,7 +17,7 @@ public static class md_Vecot
         using (Transaction trans = new Transaction(doc, "Create Column"))
         {
             trans.Start();
-            Level Levelmb = Level.Create(doc, cls_.CaoDo / 304.8);
+            Level Levelmb = Level.Create(doc, cls_.CaoDo );
 
             double levelElevation = Levelmb.Elevation;
 
