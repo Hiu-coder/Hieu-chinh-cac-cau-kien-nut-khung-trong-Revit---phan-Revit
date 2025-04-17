@@ -18,6 +18,7 @@ public class MainProgram : IExternalCommand
         cls_Matbang mb = md_Xml.XMLMatBang(@"D:\NCKH\LaybanveCAD_ver2\MATBANG.xml");
         md_Veluoi.Veluoi(doc, mb);
         md_Vedam.Vedam(doc, mb);
+        md_Vecot.Vecot(doc,mb);
         return Result.Succeeded;
     }
 }

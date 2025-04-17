@@ -15,7 +15,7 @@ public static class md_Vedam
         using (Transaction trans = new Transaction(doc, "Create Beam"))
         {
             trans.Start();
-            Level Levelmb = Level.Create(doc, cls_.CaoDo);
+            Level Levelmb = Level.Create(doc, cls_.CaoDo / 304.8);
 
             double levelElevation = Levelmb.Elevation;
 
@@ -49,7 +49,7 @@ public static class md_Vedam
 
     private static FamilySymbol GetConcreteBeamSymbol(Document doc, string familyType)
     {
-        string familyName = "Concrete-Rectangular Beam";
+        string familyName = "M_Concrete-Rectangular Beam";
 
         return new FilteredElementCollector(doc)
             .OfClass(typeof(FamilySymbol))
@@ -58,7 +58,7 @@ public static class md_Vedam
     }
     private static List<FamilySymbol> CreateConcreteBeamSymbol(Document doc, cls_Matbang cls_)
     {
-        string familyName = "Concrete-Rectangular Beam";
+        string familyName = "M_Concrete-Rectangular Beam";
 
         FamilySymbol baseSymbol = new FilteredElementCollector(doc)
             .OfClass(typeof(FamilySymbol))

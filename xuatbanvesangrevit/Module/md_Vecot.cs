@@ -5,6 +5,7 @@ using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,21 @@ public static class md_Vecot
     public static void Vecot(Document doc, cls_Matbang cls_)
     {
         List<FamilySymbol> l = CreateConcreteColumnSymbol(doc, cls_);
+        List<Level> levels = new FilteredElementCollector(doc)
+        .OfClass(typeof(Level))
+        .Cast<Level>()
+        .OrderByDescending(lv => lv.Elevation)
+        .ToList();
+
+        Level baseLevel = levels.FirstOrDefault(lv => lv.Name == $"Level {cls_.Tang}");
+        Level lowerLevel = levels.FirstOrDefault(lv => lv.Name == $"Level {cls_.Tang - 1}");
+
+        if (baseLevel == null || lowerLevel == null)
+            throw new InvalidOperationException("Không tìm thấy Level phù hợp.");
         using (Transaction trans = new Transaction(doc, "Create Column"))
         {
             trans.Start();
-            Level Levelmb = Level.Create(doc, cls_.CaoDo );
-
-            double levelElevation = Levelmb.Elevation;
+        
 
 
             foreach (var cot in cls_.DSCot)
@@ -36,8 +46,16 @@ public static class md_Vecot
                     doc.Regenerate();
                 }
                 XYZ point = new XYZ(cot.Diemdat.X, cot.Diemdat.Y, 0);
-                FamilyInstance beamInstance = doc.Create.NewFamilyInstance(point, familySymbolcot, Levelmb, StructuralType.Column);
-
+                FamilyInstance columnInstance = doc.Create.NewFamilyInstance(point, familySymbolcot, baseLevel, StructuralType.Column);
+                Parameter topLevelParam = columnInstance.get_Parameter(BuiltInParameter.FAMILY_TOP_LEVEL_PARAM);
+                if (topLevelParam != null)
+                    topLevelParam.Set(lowerLevel.Id);
+                Parameter topOffset = columnInstance.get_Parameter(BuiltInParameter.FAMILY_TOP_LEVEL_OFFSET_PARAM);
+                if (topOffset != null)
+                    topOffset.Set(0);
+                Parameter baseOffset = columnInstance.get_Parameter(BuiltInParameter.FAMILY_BASE_LEVEL_OFFSET_PARAM);
+                if (baseOffset != null)
+                    baseOffset.Set(0);
             }
 
 
@@ -47,7 +65,7 @@ public static class md_Vecot
 
     private static FamilySymbol GetConcreteColumnSymbol(Document doc, string familyType)
     {
-        string familyName = "Concrete-Rectangular Column";
+        string familyName = "M_Concrete-Rectangular-Column";
 
         return new FilteredElementCollector(doc)
             .OfClass(typeof(FamilySymbol))
@@ -56,7 +74,7 @@ public static class md_Vecot
     }
     private static List<FamilySymbol> CreateConcreteColumnSymbol(Document doc, cls_Matbang cls_)
     {
-        string familyName = "Concrete-Rectangular Column";
+        string familyName = "M_Concrete-Rectangular-Column";
 
         FamilySymbol baseSymbol = new FilteredElementCollector(doc)
             .OfClass(typeof(FamilySymbol))
@@ -70,7 +88,7 @@ public static class md_Vecot
         {
             tx.Start();
             List<FamilySymbol> symbolList = new List<FamilySymbol>();
-            foreach (var loai in cls_.LoaiDam)
+            foreach (var loai in cls_.LoaiCot)
             {
                 FamilySymbol newSymbol = baseSymbol.Duplicate(loai.Ten) as FamilySymbol;
 
