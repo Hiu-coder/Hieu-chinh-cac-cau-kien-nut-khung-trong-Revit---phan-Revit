@@ -22,12 +22,9 @@ public static class md_Vedam
             
             foreach (var beam in cls_.DSDam)
             {
-                FamilySymbol familySymboldam = GetConcreteBeamSymbol(doc,beam.Ten);
-                if (familySymboldam == null)
-                {
-                    
-                    familySymboldam = l.FirstOrDefault(fs => fs.Name.Equals(beam.Ten, StringComparison.OrdinalIgnoreCase));
-                }
+
+                FamilySymbol familySymboldam = l.FirstOrDefault(fs => fs.Name.Equals(beam.Ten, StringComparison.OrdinalIgnoreCase));
+                
                 if (!familySymboldam.IsActive)
                 {
                     familySymboldam.Activate();
@@ -47,15 +44,6 @@ public static class md_Vedam
         }
     }
 
-    private static FamilySymbol GetConcreteBeamSymbol(Document doc, string familyType)
-    {
-        string familyName = "M_Concrete-Rectangular Beam";
-
-        return new FilteredElementCollector(doc)
-            .OfClass(typeof(FamilySymbol))
-            .Cast<FamilySymbol>()
-            .FirstOrDefault(fs => fs.Family.Name == familyName && fs.Name == familyType);
-    }
     private static List<FamilySymbol> CreateConcreteBeamSymbol(Document doc, cls_Matbang cls_)
     {
         string familyName = "M_Concrete-Rectangular Beam";
@@ -68,31 +56,47 @@ public static class md_Vedam
         if (baseSymbol == null)
             throw new InvalidOperationException($"Không tìm thấy family '{familyName}' trong dự án.");
 
+        List<FamilySymbol> symbolList = new List<FamilySymbol>();
+
         using (Transaction tx = new Transaction(doc, "Tạo Beam Symbol mới"))
         {
             tx.Start();
-            List<FamilySymbol> symbolList = new List<FamilySymbol>();
+
             foreach (var loai in cls_.LoaiDam)
             {
-                FamilySymbol newSymbol = baseSymbol.Duplicate(loai.Ten) as FamilySymbol;
-                
-                // Đổi đơn vị từ mm sang internal unit (feet)
-                double widthInternal = UnitUtils.ConvertToInternalUnits(loai.Rong, UnitTypeId.Millimeters);
-                double heightInternal = UnitUtils.ConvertToInternalUnits(loai.Cao, UnitTypeId.Millimeters);
+                // Kiểm tra symbol đã tồn tại chưa
+                FamilySymbol existingSymbol = new FilteredElementCollector(doc)
+                    .OfClass(typeof(FamilySymbol))
+                    .Cast<FamilySymbol>()
+                    .FirstOrDefault(fs => fs.Family.Name == familyName && fs.Name.Equals(loai.Ten, StringComparison.OrdinalIgnoreCase));
 
-                Parameter bParam = newSymbol.LookupParameter("b");
-                Parameter hParam = newSymbol.LookupParameter("h");
+                FamilySymbol symbolToUse = existingSymbol;
 
-                if (bParam != null && bParam.StorageType == StorageType.Double)
-                    bParam.Set(widthInternal);
+                if (existingSymbol == null)
+                {
+                    symbolToUse = baseSymbol.Duplicate(loai.Ten) as FamilySymbol;
 
-                if (hParam != null && hParam.StorageType == StorageType.Double)
-                    hParam.Set(heightInternal);
-                symbolList.Add(newSymbol);
+                    // Đổi đơn vị từ mm sang internal unit (feet)
+                    double widthInternal = UnitUtils.ConvertToInternalUnits(loai.Rong, UnitTypeId.Millimeters);
+                    double heightInternal = UnitUtils.ConvertToInternalUnits(loai.Cao, UnitTypeId.Millimeters);
+
+                    Parameter bParam = symbolToUse.LookupParameter("b");
+                    Parameter hParam = symbolToUse.LookupParameter("h");
+
+                    if (bParam != null && bParam.StorageType == StorageType.Double)
+                        bParam.Set(widthInternal);
+
+                    if (hParam != null && hParam.StorageType == StorageType.Double)
+                        hParam.Set(heightInternal);
+                }
+
+                symbolList.Add(symbolToUse);
             }
+
             tx.Commit();
-            return symbolList;
         }
+
+        return symbolList;
     }
 }
 
