@@ -9,17 +9,13 @@ using System;
 [Transaction(TransactionMode.Manual)]
 public static class md_Vedam
 {
-    public static void Vedam(Document doc, cls_Matbang cls_)
+    public static void Vedam(Document doc, cls_Matbang cls_,Level baseLevel)
     {
         List<FamilySymbol> l = CreateConcreteBeamSymbol(doc, cls_);
         using (Transaction trans = new Transaction(doc, "Create Beam"))
         {
             trans.Start();
-            Level Levelmb = Level.Create(doc, cls_.CaoDo / 304.8);
-
-            double levelElevation = Levelmb.Elevation;
-
-            
+            var cd = baseLevel.Elevation;
             foreach (var beam in cls_.DSDam)
             {
 
@@ -30,12 +26,12 @@ public static class md_Vedam
                     familySymboldam.Activate();
                     doc.Regenerate();
                 }
-                XYZ start = new XYZ(beam.Dau.X/304.8, beam.Dau.Y / 304.8, levelElevation);
-                XYZ end = new XYZ(beam.Cuoi.X/304.8, beam.Cuoi.Y / 304.8, levelElevation);
+                XYZ start = new XYZ(beam.Dau.X/304.8, beam.Dau.Y / 304.8, cd);
+                XYZ end = new XYZ(beam.Cuoi.X/304.8, beam.Cuoi.Y / 304.8, cd);
                 Line beamLine = Line.CreateBound(start, end);
 
                 FamilyInstance beamInstance = doc.Create.NewFamilyInstance(
-                    beamLine, familySymboldam, Levelmb, StructuralType.Beam);
+                    beamLine, familySymboldam, baseLevel, StructuralType.Beam);
 
             }
 

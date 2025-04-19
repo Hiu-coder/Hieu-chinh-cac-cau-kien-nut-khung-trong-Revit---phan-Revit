@@ -8,10 +8,15 @@ using System.Xml.Serialization;
 public class cls_Matbang
 {
     [XmlElement("Tầng")]
-    public double Tang { get; set; }
+    public int Tang { get; set; }
 
     [XmlElement("CaoĐộ")]
     public double CaoDo { get; set; }
+    [XmlElement("TầngKetThuc")]
+    public int TangKT { get; set; }
+
+    [XmlElement("CaoĐộKetThuc")]
+    public double CaoDoKt { get; set; }
 
     [XmlElement("DanhSáchDầm")]
     public List<cls_Dam> DSDam { get; set; }
