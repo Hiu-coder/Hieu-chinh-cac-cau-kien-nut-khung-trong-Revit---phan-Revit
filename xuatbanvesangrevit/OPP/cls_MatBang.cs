@@ -7,7 +7,7 @@ public class cls_CongTrinh
 {
     [XmlElement("MatBang")]
     public List<cls_Matbang> CongTrinh { get; set; }
-
+    public cls_LuoiTruc LuoiTrucChung { get; set; }
     public cls_CongTrinh()
     {
         CongTrinh = new List<cls_Matbang>();

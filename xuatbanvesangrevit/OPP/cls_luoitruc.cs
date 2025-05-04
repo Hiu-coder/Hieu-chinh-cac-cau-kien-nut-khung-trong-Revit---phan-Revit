@@ -1,6 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Autodesk.Revit.DB;
 
 [Serializable]
 [XmlRoot("LuoiTruc")]
@@ -11,17 +13,25 @@ public class cls_LuoiTruc
 
     [XmlElement("TrucNgang")]
     public List<cls_TrucNgang> TrucNgang { get; set; }
-
     [XmlElement("DiemGiao")]
-    public List<cls_Diem> DiemGiao { get; set; }
+    public List<cls_DiemGiao> DiemGiao { get; set; }
 
     // Constructor để tránh lỗi null khi khởi tạo
     public cls_LuoiTruc()
     {
         TrucDoc = new List<cls_TrucDoc>();
         TrucNgang = new List<cls_TrucNgang>();
-        DiemGiao = new List<cls_Diem>();
+        DiemGiao = new List<cls_DiemGiao>();
     }
+}
+
+public class cls_DiemGiao
+{
+    [XmlElement("Ten")]
+    public string Ten { get; set; }
+    [XmlElement("ToaDo")]
+    public cls_Diem Toadoxml { get; set; }
+    
 }
 
 public class cls_TrucNgang
@@ -34,6 +44,9 @@ public class cls_TrucNgang
 
     [XmlElement("DiemCuoi")]
     public cls_Diem DiemCuoi { get; set; }
+
+    [XmlIgnore]
+    public Line Line { get; set; }
 }
 
 public class cls_TrucDoc
@@ -46,6 +59,9 @@ public class cls_TrucDoc
 
     [XmlElement("DiemCuoi")]
     public cls_Diem DiemCuoi { get; set; }
+
+    [XmlIgnore]
+    public Line Line { get; set; }
 }
 
 public class cls_Diem

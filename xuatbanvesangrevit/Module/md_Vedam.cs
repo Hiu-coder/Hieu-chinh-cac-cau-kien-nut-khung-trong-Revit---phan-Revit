@@ -9,7 +9,7 @@ using System;
 [Transaction(TransactionMode.Manual)]
 public static class md_Vedam
 {
-    public static void Vedam(Document doc, cls_Matbang cls_,Level baseLevel)
+    public static void Vedam(Document doc, cls_Matbang cls_,Level baseLevel,cls_CongTrinh ct)
     {
         List<FamilySymbol> l = CreateConcreteBeamSymbol(doc, cls_);
         using (Transaction trans = new Transaction(doc, "Create Beam"))
@@ -19,15 +19,28 @@ public static class md_Vedam
             foreach (var beam in cls_.DSDam)
             {
 
-                FamilySymbol familySymboldam = l.FirstOrDefault(fs => fs.Name.Equals(beam.Ten, StringComparison.OrdinalIgnoreCase));
+                FamilySymbol familySymboldam = l.FirstOrDefault(fs => fs.Name.Equals(beam.Loaidam.Ten, StringComparison.OrdinalIgnoreCase));
                 
                 if (!familySymboldam.IsActive)
                 {
                     familySymboldam.Activate();
                     doc.Regenerate();
                 }
-                XYZ start = new XYZ(beam.Dau.X/304.8, beam.Dau.Y / 304.8, cd);
-                XYZ end = new XYZ(beam.Cuoi.X/304.8, beam.Cuoi.Y / 304.8, cd);
+                XYZ start = null;
+                    XYZ end=null;
+                var trucxetdoc = ct.LuoiTrucChung.TrucDoc.FirstOrDefault(fs => fs.Ten.Equals(beam.Trucxet, StringComparison.OrdinalIgnoreCase));
+                if (trucxetdoc != null)
+                {
+                     start=new XYZ((trucxetdoc.DiemDau.X - beam.LechTrucX1) / 304.88, (trucxetdoc.DiemDau.Y - beam.LechTrucY1) / 304.88, cd);
+                     end = new XYZ((trucxetdoc.DiemCuoi.X - beam.LechTrucX2) / 304.88, (trucxetdoc.DiemCuoi.Y - beam.LechTrucY2) / 304.88, cd);
+                }
+                else
+                {
+                    var trucxetngang = ct.LuoiTrucChung.TrucNgang.FirstOrDefault(fs => fs.Ten.Equals(beam.Trucxet, StringComparison.OrdinalIgnoreCase));
+                    start = new XYZ((trucxetngang.DiemDau.X- beam.LechTrucX1 )/ 304.88, (trucxetngang.DiemDau.Y - beam.LechTrucY1) / 304.88, cd);
+                    end = new XYZ((trucxetngang.DiemCuoi.X - beam.LechTrucX2) / 304.88, (trucxetngang.DiemDau.Y - beam.LechTrucY2) / 304.88, cd);
+                }
+                
                 Line beamLine = Line.CreateBound(start, end);
 
                 FamilyInstance beamInstance = doc.Create.NewFamilyInstance(

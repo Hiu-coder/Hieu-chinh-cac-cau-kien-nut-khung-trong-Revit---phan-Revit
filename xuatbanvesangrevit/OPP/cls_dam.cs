@@ -5,23 +5,23 @@ using System.Xml.Serialization;
 [XmlRoot("--------")]
 public class cls_Dam
 {
-    [XmlElement("Tên")]
-    public string Ten { get; set; }
+    [XmlElement("LoaiDam")]
+    public cls_LoaiDam Loaidam { get; set; }
 
-    [XmlElement("Đầu")]
-    public cls_Diem Dau { get; set; }
+    [XmlElement("TrucXet")]
+    public string Trucxet { get; set; }
 
-    [XmlElement("Cuối")]
-    public cls_Diem Cuoi { get; set; }
+    [XmlElement("LechTrucY1")]
+    public double LechTrucY1 { get; set; }
 
-    [XmlElement("Rộng")]
-    public double Rong { get; set; }
+    [XmlElement("LechTrucY2")]
+    public double LechTrucY2 { get; set; }
 
-    [XmlElement("Cao")]
-    public double Cao { get; set; }
+    [XmlElement("LechTrucX1")]
+    public double LechTrucX1 { get; set; }
 
-    [XmlElement("Lệchtrục")]
-    public double LechTruc { get; set; }
+    [XmlElement("LechTrucX2")]
+    public double LechTrucX2 { get; set; }
 
     public cls_Dam()
     {
@@ -44,3 +44,4 @@ public class cls_LoaiDam
     {
     }
 }
+

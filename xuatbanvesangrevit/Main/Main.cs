@@ -15,11 +15,10 @@ public class MainProgram : IExternalCommand
         UIDocument uiDoc = commandData.Application.ActiveUIDocument;
         Document doc = uiDoc.Document;
         Level baseLevel = null;
-        cls_CongTrinh ct = md_Xml.XMLMatBang(@"D:\NCKH\LaybanveCAD_ver2\MATBANG.xml");
+        cls_CongTrinh ct = null;
+          ct=  md_Xml.XMLMatBang(@"D:\NCKH\LaybanveCAD_ver2\MATBANG.xml");
         foreach (var mb in ct.CongTrinh)
         {
-
-
             using (Transaction trans = new Transaction(doc, "Tạo tầng mặt bằng"))
             {
                 trans.Start();
@@ -48,12 +47,14 @@ public class MainProgram : IExternalCommand
                         floorPlan.Name = baseLevel.Name;
                     }
                 }
-
+                if (ct.LuoiTrucChung == null) { 
+                    ct.LuoiTrucChung = mb.LuoiTruc;
+                   }
                 trans.Commit();
             }
-            md_Veluoi.Veluoi(doc, mb);
-            md_Vedam.Vedam(doc, mb, baseLevel);
-            md_Vecot.Vecot(doc, mb, baseLevel);
+            md_Veluoi.Veluoi(doc, mb,ct);
+            md_Vedam.Vedam(doc, mb, baseLevel,ct);
+            md_Vecot.Vecot(doc, mb, baseLevel,ct);
         }
         return Result.Succeeded;
     }

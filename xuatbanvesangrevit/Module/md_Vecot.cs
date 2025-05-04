@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 [Transaction(TransactionMode.Manual)]
 public static class md_Vecot
     {
-    public static void Vecot(Document doc, cls_Matbang cls_ , Level baseLevel)
+    public static void Vecot(Document doc, cls_Matbang cls_ , Level baseLevel, cls_CongTrinh ct)
     {
         List<FamilySymbol> l = CreateConcreteColumnSymbol(doc, cls_);
         Level lowerLevel = null;
@@ -50,14 +50,15 @@ public static class md_Vecot
         
             foreach (var cot in cls_.DSCot)
             {
-                FamilySymbol familySymbolcot = l.FirstOrDefault(fs => fs.Name.Equals(cot.Ten, StringComparison.OrdinalIgnoreCase));
+                FamilySymbol familySymbolcot = l.FirstOrDefault(fs => fs.Name.Equals(cot.Loai.Ten, StringComparison.OrdinalIgnoreCase));
                 
                 if (!familySymbolcot.IsActive)
                 {
                     familySymbolcot.Activate();
                     doc.Regenerate();
                 }
-                XYZ point = new XYZ(cot.Diemdat.X/304.8, cot.Diemdat.Y / 304.8, 0);
+                cls_DiemGiao diemgiao = ct.LuoiTrucChung.DiemGiao.FirstOrDefault(fs => fs.Ten.Equals(cot.Diemdat, StringComparison.OrdinalIgnoreCase));
+                XYZ point = new XYZ((diemgiao.Toadoxml.X - cot.LechgiaotrucX) / 304.88, (diemgiao.Toadoxml.Y - cot.LechgiaotrucY) / 304.88, 0);
                 FamilyInstance columnInstance = doc.Create.NewFamilyInstance(point, familySymbolcot, baseLevel, StructuralType.Column);
                 Parameter topLevelParam = columnInstance.get_Parameter(BuiltInParameter.FAMILY_TOP_LEVEL_PARAM);
                 if (topLevelParam != null)

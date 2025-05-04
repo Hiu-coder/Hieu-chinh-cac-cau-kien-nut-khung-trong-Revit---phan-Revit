@@ -10,18 +10,18 @@ using Autodesk.Revit.UI;
 [Transaction(TransactionMode.Manual)]
 public static class md_Veluoi 
 {
-    public static void Veluoi(Document doc,cls_Matbang cls_)
+    public static void Veluoi(Document doc,cls_Matbang cls_,cls_CongTrinh ct)
     {
         using (Transaction trans = new Transaction(doc, "Create Grid"))
         {
             trans.Start();
 
-            foreach (var truc in cls_.LuoiTruc.TrucDoc)
+            foreach (var truc in ct.LuoiTrucChung.TrucDoc)
             {
                 CreateGrid(doc, truc.Ten, truc.DiemDau, truc.DiemCuoi);
             }
 
-            foreach (var truc in cls_.LuoiTruc.TrucNgang)
+            foreach (var truc in ct.LuoiTrucChung.TrucNgang)
             {
                 CreateGrid(doc, truc.Ten, truc.DiemDau, truc.DiemCuoi);
             }

@@ -6,14 +6,18 @@ using System.Xml.Serialization;
 [XmlRoot("------")]
 public class cls_Cot
 {
-    [XmlElement("Ten")]
-    public string Ten { get; set; }
+    [XmlElement("LoaiCot")]
+    public cls_LoaiCot Loai { get; set; }
 
-    [XmlElement("Diemdat")]
-    public cls_Diem Diemdat { get; set; }
+    [XmlElement("DiemDat")]
+    public string Diemdat { get; set; }
 
-    [XmlElement("Lechgiaotruc")]
-    public cls_Lech Lechgiaotruc { get; set; }
+    [XmlElement("LechgiaotrucX")]
+    public double LechgiaotrucX { get; set; }
+
+    [XmlElement("LechgiaotrucY")]
+    public double LechgiaotrucY { get; set; }
+
     [XmlElement("Goc")]
     public double Goc { get; set; }
 }
@@ -33,14 +37,4 @@ public class cls_LoaiCot
     public cls_LoaiCot()
     {
     }
-}
-
-[Serializable]
-public class cls_Lech
-{
-    [XmlElement("X")]
-    public double X { get; set; }
-
-    [XmlElement("Y")]
-    public double Y { get; set; }
 }
